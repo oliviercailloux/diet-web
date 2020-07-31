@@ -2,3 +2,5 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 destination: docs
+exclude:
+  - README.adoc
