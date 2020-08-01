@@ -1,5 +1,6 @@
 = The Diet Website.
 
+. Validate: xmllint --schema xhtml1-strict.xsd --noout docs/index.xhtml
 . Build with jekyll locally: jekyll serve
 . Push to GitHub
 . Check that it is updated
