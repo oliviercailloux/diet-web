@@ -4,3 +4,7 @@ plugins:
 destination: docs
 exclude:
   - README.adoc
+title: "Ma cantine"
+tagline: "Un site concernant le choix bien réfléchi des menus d’une cantine hypothétique"
+description: "Une étude scientifique concernant le jugement réfléchi"
+lang: fr
