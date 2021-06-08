@@ -1,0 +1,56 @@
+id timestamp: /timestamp/next => list of current videos or other next step.
+Post: /timestamp/start. Give password as well. Server marks as accepted (new user) and remembers password.
+
+Then, /timestamp/next ok!
+
+Start: /timestamp/next? No videos!
+
+Authentication: its generated password.
+
+Sign up with existing uid. Post: /1/associate. Server replaces old (timestamp, password) with new (email, password). From now on, info is at /email/next instead of /timestamp/next.
+
+Use basic authentication: Authorization: Basic then base64-encoded (timestamp, password).
+OR when the user is logged in: Authorization: Basic then base64-encoded (username, password).
+
+Thus, username is either a timestamp or an e-mail address.
+=> e-mail should be used because permits to recover lost password, and easy to remember for the user, and if contact is allowed, no need to re-type it.
+
+https://httpbin.org/#/Auth/get_basic_auth__user___passwd_
+https://stackoverflow.com/questions/43842793/basic-authentication-with-fetch
+
+        ◦ Fetch API
+        ◦ Page Le débat dépend de l’état : EULA (qui crée l’utilisateur Inconnu), Vidéo, Question, etc.
+        ◦ Moi : contient (comme titres) Progression, Profil sociologique renseigné, Log out ou clear
+        ◦ Moi à mettre à droite même en petit ; remplacer par une icône et un alt. Envisager de rendre le site vraiment responsive avec une adaptation dynamique.
+        ◦ Inconnu. Redémarrer. Peux uniquement voir son progrès et des explications (un seul navigateur), et se logger. Tout ce qu’il fait est envoyé, avec son id cookie, au serveur, pour suivi de son état.
+        ◦ Lorsqu’il se logge, tout ce qu’il fait est envoyé au serveur avec son login.
+        ◦ https://medium.com/better-programming/an-introduction-to-using-jekyll-with-bootstrap-4-6f2433afeda9
+        ◦ Mettre sur la même page : les images à droite. Si on garde le 3, il faut expliquer le OU d’une manière graphique adéquate, sinon le 1 mais le 3 est plus compact. Retirer la première phrase, elle est utilement remplacée par les images.
+
+    • Vidéo
+        ◦ https://video.stackexchange.com/questions/5318/how-does-youtube-encode-my-uploads-and-what-codec-should-i-use-to-upload?newreg=7fea1ca502f74a799912c4a1f0f363df
+            ▪ YouTube uses 4 container formats and 4 different codecs. It depends on the popularity of the video what codecs are used for your video (see below why). Generally, every of your uploaded videos will be encoded in h.264 and will be muxed into an .flv and .mp4 container. That's the standard and this will happen for every video. Though .flv will only be used for resolutions below 720p. Meaning only 360p and 480p will exist in an .flv container. Though every video below 720p will also have a mp4 version available. For 240p YouTube is also using 3gp which is a rather old codec (based on MPEG-4 Part 2 (not to be confused with MPEG4 Part 10 aka h.264) meant for mobile devices (long before the smartphone era), it comes in the container .3gpp. The other codec used is VP8 which is coming in the WebM container format. By now YouTube also supports VP9 in WebM but so far only chrome supports this codec (as of 06/2015).
+        ◦ https://www.dacast.com/support/knowledgebase/live-encoder-configuration/
+        ◦ I’d use H.264 (AVC) and AAC into MP4 and VP9 and Opus in MebM (recommended in https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs) 
+        ◦ <video controls>
+        ◦     <source src="example.mp4" type="video/mp4">
+        ◦     <source src="example.webm" type="video/webm">
+        ◦ </video>
+        ◦ https://stackoverflow.com/questions/38626993/change-video-quality-with-sources-pointing-to-different-quality-versions
+        ◦ https://rigor.com/blog/optimizing-mp4-video-for-fast-streaming/ https://engineering.fb.com/video-engineering/av1-beats-x264-and-libvpx-vp9-in-practical-use-case/
+        ◦ Make different sizes to match screen size.
+        ◦ https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP https://videojs.github.io/videojs-contrib-dash/ https://docs.videojs.com/tutorial-faq.html#q-does-videojs-support-hls-http-live-streaming-video
+        ◦ https://videojs.com/
+        ◦ https://blog.infireal.com/2018/04/mpeg-dash-with-only-ffmpeg/ https://stackoverflow.com/questions/48256686/how-to-create-multi-bit-rate-dash-content-using-ffmpeg-dash-muxer 
+
+
+https://trac.ffmpeg.org/wiki/Encode/H.264
+https://www.brendanlong.com/the-structure-of-an-mpeg-dash-mpd.html
+https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery/Setting_up_adaptive_streaming_media_sources
+
+QUAL=28; ffmpeg -t 10 -i "sD1 orig.mov" -c:v libx264 -preset veryslow -crf ${QUAL} -an -movflags faststart "sD1 orig ${QUAL}.mp4"
+OU -c:a aac au lieu de -an
+
+https://commsbrief.com/data-speeds-with-gprs-edge-umts-hspa-hspa-4g-and-4g/
+GPRS: 170 kbps
+
