@@ -2,6 +2,8 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 destination: docs
+url: https://oliviercailloux.github.io
+baseurl: /diet-web
 exclude:
   - README.adoc
   - Notes.txt
