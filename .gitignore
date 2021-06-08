@@ -1,3 +1,6 @@
 .jekyll-cache/
 docs/
+.project
+.settings/
+Notes.txt
 
