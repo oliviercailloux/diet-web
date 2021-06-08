@@ -6,13 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <title>{{ page.title }}</title>
   {% seo %}
-  <script type="text/javascript" src="main.js" defer></script>
+  <script src="main.js" defer></script>
+  {% for js_name in page.extra_js %}
+  <script src="{{ js_name }}" defer></script>
+  {% endfor %}
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-md navbar-light bg-light">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -27,15 +29,16 @@
           <a class="nav-link" href="/champions.html">Les champions</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/débat.html">Le débat</a>
+          <a class="nav-link" href="/debat.html">Le débat</a>
         </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link" href="/progression.html">Progression</a>
+          <a class=" nav-link" href="/moi.html">Moi</a>
         </li>
       </ul>
     </div>
   </nav>
-  <button>Click me</button>
   <div class="container">
     <h1>{{ page.title }}</h1>
     {{ content }}
