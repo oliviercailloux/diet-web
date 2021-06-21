@@ -2,15 +2,62 @@
 layout: default
 title: Le débat
 extra_js:
+- support.js
 - debate.js
 ---
-<p>Avant d’écouter les arguments des champions, nous vous prions d’indiquer votre acceptation des quelques clauses
-    suivantes, visant à nous permettre d’enregistrer votre parcours à travers les arguments, les parties de vidéos vues,
-    vos appréciations de ces arguments, et les réponses aux questions que nous vous poserons. Ces données seront
-    utilisées
-    uniquement dans le cadre de notre étude scientifique, et ne seront aucunement divulguées à des tierces
-    parties ou croisées avec d’autres informations vous concernant.</p>
-<p>Blah blah texte légal.</p>
-<p>Cliquez ci-dessous pour poursuivre le protocole d’expérimentation, si vous acceptez ces conditions.</p>
-<button type="button" class="btn btn-primary btn-block" id="accept-conditions">J’accepte ces conditions</button>
-<p>(NB : si vous avez déjà accepté ces conditions, et avez créé un compte utilisateur, loguez-vous pour revenir où vous en étiez.)</p>
+<div id="conditions" hidden="true">
+	<p>Avant d’écouter les arguments des champions, nous vous prions
+		d’indiquer votre acceptation des quelques clauses suivantes, visant à
+		nous permettre d’enregistrer votre parcours à travers les arguments,
+		les parties de vidéos vues, vos appréciations de ces arguments, et les
+		réponses aux questions que nous vous poserons. Ces données seront
+		utilisées uniquement dans le cadre de notre étude scientifique, et ne
+		seront aucunement divulguées à des tierces parties ou croisées avec
+		d’autres informations vous concernant.</p>
+	<p>Blah blah texte légal.</p>
+	<p>Cliquez ci-dessous pour poursuivre le protocole
+		d’expérimentation, si vous acceptez ces conditions.</p>
+	<button type="button" class="btn btn-primary btn-block"
+		id="accept-conditions">J’accepte ces conditions</button>
+	<p>(NB : si vous avez déjà accepté ces conditions, et avez créé un
+		compte utilisateur, loguez-vous pour revenir où vous en étiez.)</p>
+</div>
+<div id="initial-questions" class="container">
+	<p>Une autorité locale considère la mise en place d’une cantine
+		publique dans la ville de Ploum-Sur-Quaine. Dans quelle mesure cette
+		cantine devrait-elle être végane ?</p>
+	<div class="row">
+		<div class="col-sm-5">
+			<p>Nombre de jours avec choix uniquement vegan</p>
+		</div>
+		<div class="col-sm">
+			<button type="button" class="btn"
+		id="minus"><i class="fas"></i>
+		</button>
+		</div>
+		<div class="col-sm">
+	<div style="width: 20px; height: 20px; border: 1px solid #000;"></div>
+		</div>
+		<div class="col-sm">
+			<i class="fas"></i>
+		</div>
+		<div class="col-sm">
+			<div style="width: 20px; height: 20px; border: 1px solid #000;"></div>
+		</div>
+		<div class="col-sm">
+			<div style="width: 20px; height: 20px; border: 1px solid #000;"></div>
+		</div>
+		<div class="col-sm">
+			<div style="width: 20px; height: 20px; border: 1px solid #000;"></div>
+		</div>
+		<div class="col-sm">
+			Plus
+		</div>
+	</div>
+	<div class="row">Slmt pas-vegan.</div>
+	<div class="row">Choix.</div>
+	<div class="row">Somme : 5.</div>
+</div>
+<div id="videos" class="row" hidden="true">
+	<p>Videos.</p>
+</div>

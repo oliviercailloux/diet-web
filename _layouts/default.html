@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 
 <head>
@@ -7,9 +7,9 @@
   <link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{{ page.url | replace:'index.html',''}}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://kit.fontawesome.com/a7f6fa4963.js" crossorigin="anonymous"></script>
   <base href="{{ site.baseurl }}/">
   {% seo %}
-  <script src="main.js" defer></script>
   {% for js_name in page.extra_js %}
   <script src="{{ js_name }}" defer></script>
   {% endfor %}
