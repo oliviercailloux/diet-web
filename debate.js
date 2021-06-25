@@ -21,3 +21,5 @@ accept.onclick = function () {
     console.log('Conditions accepted.');
     
 }
+
+new Controller().bind();
