@@ -67,9 +67,8 @@ class CountingRowContent {
 		this.leafSpans = [];
 		for (let i = 0; i < 5; i++) {
 			const fasSpanLeaf = document.createElement("span");
-			fasSpanLeaf.setAttribute("class", "fas");
+			fasSpanLeaf.setAttribute("class", `fas ${this.icon}`);
 			fasSpanLeaf.setAttribute("style", this.iconStyle);
-			fasSpanLeaf.append(this.icon);
 			this.leafSpans[i] = fasSpanLeaf;
 		}
 
@@ -147,7 +146,7 @@ class Controller {
 
 	bind() {
 		const rowVegan = document.getElementById('row-vegan');
-		this.veganRowContent = new CountingRowContent('Nombre de jours avec choix uniquement vegan : ', '', 'color: Green', true);
+		this.veganRowContent = new CountingRowContent('Nombre de jours avec choix uniquement vegan : ', 'fa-leaf', 'color: Green', true);
 		this.veganRowContent.bindTo(rowVegan);
 		this.veganRowContent.minusOnClick = this.minusVegan.bind(this);
 		this.veganRowContent.plusOnClick = this.plusVegan.bind(this);
@@ -159,13 +158,13 @@ class Controller {
 		this.meatRowContent.plusOnClick = this.plusMeat.bind(this);
 
 		const rowMixed = document.getElementById('row-mixed');
-		this.mixedRowContent = new CountingRowContent('Nombre de jours avec choix vegan et non-vegan : ', '', 'color: Blue', true);
+		this.mixedRowContent = new CountingRowContent('Nombre de jours avec choix vegan et non-vegan : ', 'fa-leaf', 'color: Blue', true);
 		this.mixedRowContent.bindTo(rowMixed);
 		this.mixedRowContent.minusOnClick = this.minusMixed.bind(this);
 		this.mixedRowContent.plusOnClick = this.plusMixed.bind(this);
 
 		const rowRemaining = document.getElementById('row-remaining');
-		this.remainingRowContent = new CountingRowContent('Nombre de jours restant à répartir : ', '', 'color: Black', false);
+		this.remainingRowContent = new CountingRowContent('Nombre de jours restant à répartir : ', 'fa-leaf', 'color: Black', false);
 		this.remainingRowContent.bindTo(rowRemaining);
 
 		this.refresh();
