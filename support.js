@@ -29,6 +29,54 @@ function createButton(content, visible) {
 	return button;
 }
 
+function createVeganIcon() {
+	const fas = document.createElement('span');
+	fas.setAttribute('class', 'fas fa-leaf');
+	fas.setAttribute('style', 'color: Green');
+	return fas;
+}
+
+function createMeatIcon() {
+	const fas = document.createElement('span');
+	fas.setAttribute('class', 'fas fa-drumstick-bite');
+	fas.setAttribute('style', 'color: Red');
+	return fas;
+}
+
+function createMixedIcon() {
+	const faLayers = document.createElement('span');
+	faLayers.setAttribute('class', 'fa-layers fa-fw');
+	faLayers.setAttribute('style', 'background: MistyRose');
+	
+	const vegan = createVeganIcon();
+	vegan.setAttribute('data-fa-transform', 'shrink-4 down-2 right-2');
+	
+	const meat = createMeatIcon();
+	meat.setAttribute('data-fa-transform', 'shrink-4 up-2 left-2');
+	
+	faLayers.appendChild(vegan);
+	faLayers.appendChild(meat);
+	
+	return faLayers;
+}
+
+function createRemainingIcon() {
+	const faLayers = document.createElement('span');
+	faLayers.setAttribute('class', 'fa-layers fa-fw');
+	faLayers.setAttribute('style', 'background: MistyRose');
+	
+	const vegan = createVeganIcon();
+	vegan.setAttribute('data-fa-transform', 'shrink-4 down-2 right-2');
+	
+	const meat = createMeatIcon();
+	meat.setAttribute('data-fa-transform', 'shrink-4 up-2 left-2');
+	
+	faLayers.appendChild(vegan);
+	faLayers.appendChild(meat);
+	
+	return faLayers;
+}
+
 class CountingRowContent {
 	headerString;
 	iconStyle;
@@ -42,10 +90,9 @@ class CountingRowContent {
 	minusButton;
 	plusButton;
 
-	constructor(headerString, icon, iconStyle, withButtons) {
+	constructor(headerString, iconFunction, withButtons) {
 		this.headerString = headerString;
-		this.iconStyle = iconStyle;
-		this.icon = icon;
+		this.icon = iconFunction;
 		this.withButtons = withButtons;
 	}
 
@@ -66,10 +113,7 @@ class CountingRowContent {
 
 		this.leafSpans = [];
 		for (let i = 0; i < 5; i++) {
-			const fasSpanLeaf = document.createElement("span");
-			fasSpanLeaf.setAttribute("class", `fas ${this.icon}`);
-			fasSpanLeaf.setAttribute("style", this.iconStyle);
-			this.leafSpans[i] = fasSpanLeaf;
+			this.leafSpans[i] = this.icon.call();
 		}
 
 		const minusButton = createButton('', this.withButtons);
@@ -146,25 +190,25 @@ class Controller {
 
 	bind() {
 		const rowVegan = document.getElementById('row-vegan');
-		this.veganRowContent = new CountingRowContent('Nombre de jours avec choix uniquement vegan : ', 'fa-leaf', 'color: Green', true);
+		this.veganRowContent = new CountingRowContent('Nombre de jours avec choix uniquement vegan : ', createVeganIcon, true);
 		this.veganRowContent.bindTo(rowVegan);
 		this.veganRowContent.minusOnClick = this.minusVegan.bind(this);
 		this.veganRowContent.plusOnClick = this.plusVegan.bind(this);
 
 		const rowMeat = document.getElementById('row-meat');
-		this.meatRowContent = new CountingRowContent('Nombre de jours avec choix uniquement non-vegan : ', 'fa-drumstick-bite', 'color: Red', true);
+		this.meatRowContent = new CountingRowContent('Nombre de jours avec choix uniquement non-vegan : ', createMeatIcon, true);
 		this.meatRowContent.bindTo(rowMeat);
 		this.meatRowContent.minusOnClick = this.minusMeat.bind(this);
 		this.meatRowContent.plusOnClick = this.plusMeat.bind(this);
 
 		const rowMixed = document.getElementById('row-mixed');
-		this.mixedRowContent = new CountingRowContent('Nombre de jours avec choix vegan et non-vegan : ', 'fa-leaf', 'color: Blue', true);
+		this.mixedRowContent = new CountingRowContent('Nombre de jours avec choix vegan et non-vegan : ', createMixedIcon, true);
 		this.mixedRowContent.bindTo(rowMixed);
 		this.mixedRowContent.minusOnClick = this.minusMixed.bind(this);
 		this.mixedRowContent.plusOnClick = this.plusMixed.bind(this);
 
 		const rowRemaining = document.getElementById('row-remaining');
-		this.remainingRowContent = new CountingRowContent('Nombre de jours restant à répartir : ', 'fa-leaf', 'color: Black', false);
+		this.remainingRowContent = new CountingRowContent('Nombre de jours restant à répartir : ', createRemainingIcon, false);
 		this.remainingRowContent.bindTo(rowRemaining);
 
 		this.refresh();
