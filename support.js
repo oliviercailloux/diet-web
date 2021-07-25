@@ -7,135 +7,29 @@ function makeId(length) {
 	return result;
 }
 
-function createButton(content, visible) {
-	const button = document.createElement("button");
-	{
-		button.setAttribute("type", "button");
-		button.setAttribute("class", "btn");
-		let visibility;
-		if (visible) {
-			visibility = 'visible';
-		} else {
-			visibility = 'hidden';
-		}
-		button.setAttribute('style', `visibility:${visibility}`);
-
-		const fasSpan = document.createElement('span');
-		fasSpan.setAttribute("class", "fas");
-		fasSpan.append(content);
-		button.appendChild(fasSpan);
-	}
-
-	return button;
-}
-
-function createVeganIcon() {
-	const fas = document.createElement('span');
-	fas.setAttribute('class', 'fas fa-leaf');
-	fas.setAttribute('style', 'color: Green');
-	return fas;
-}
-
-function createMeatIcon() {
-	const fas = document.createElement('span');
-	fas.setAttribute('class', 'fas fa-drumstick-bite');
-	fas.setAttribute('style', 'color: Red');
-	return fas;
-}
-
-function createMixedIcon() {
-	const faLayers = document.createElement('span');
-	faLayers.setAttribute('class', 'fa-layers fa-fw');
-	faLayers.setAttribute('style', 'background: MistyRose');
-	
-	const vegan = createVeganIcon();
-	vegan.setAttribute('data-fa-transform', 'shrink-4 down-2 right-2');
-	
-	const meat = createMeatIcon();
-	meat.setAttribute('data-fa-transform', 'shrink-4 up-2 left-2');
-	
-	faLayers.appendChild(vegan);
-	faLayers.appendChild(meat);
-	
-	return faLayers;
-}
-
-function createRemainingIcon() {
-	const faLayers = document.createElement('span');
-	faLayers.setAttribute('class', 'fa-layers fa-fw');
-	faLayers.setAttribute('style', 'background: MistyRose');
-	
-	const vegan = createVeganIcon();
-	vegan.setAttribute('data-fa-transform', 'shrink-4 down-2 right-2');
-	
-	const meat = createMeatIcon();
-	meat.setAttribute('data-fa-transform', 'shrink-4 up-2 left-2');
-	
-	faLayers.appendChild(vegan);
-	faLayers.appendChild(meat);
-	
-	return faLayers;
-}
-
 class CountingRowContent {
-	headerString;
-	iconStyle;
-	icon;
+	keyword;
+	icons;
 
-	hidingSpan;
-	visibleSpan;
-	leafSpans;
-	countDaysOnlyVegan;
-	withButtons;
+	countDays;
 	minusButton;
 	plusButton;
 
-	constructor(headerString, iconFunction, withButtons) {
-		this.headerString = headerString;
-		this.icon = iconFunction;
-		this.withButtons = withButtons;
+	constructor(keyword) {
+		this.keyword = keyword;
+		this.icons = new Array(5);
 	}
 
-	bindTo(element) {
-		const headerDiv = document.createElement("div");
-		headerDiv.setAttribute("class", "col");
+	init() {
+		this.countDays = document.getElementById(`days-${this.keyword}`);
 
-		const headerP = document.createElement("p");
-		const headerText = document.createTextNode(this.headerString);
-		this.countDaysOnlyVegan = document.createTextNode(0);
-
-		const barDiv = document.createElement("div");
-		barDiv.setAttribute("class", "col-auto");
-
-		this.hidingSpan = document.createElement("span");
-		this.hidingSpan.setAttribute("style", "visibility:hidden");
-		this.visibleSpan = document.createElement("span");
-
-		this.leafSpans = [];
-		for (let i = 0; i < 5; i++) {
-			this.leafSpans[i] = this.icon.call();
+		for (let i = 1; i <= 5; i++) {
+			this.icons[i] = document.getElementById(`${this.keyword}-${i}`);
 		}
 
-		const minusButton = createButton('', this.withButtons);
-		const plusButton = createButton('', this.withButtons);
-		if (this.withButtons) {
-			this.minusButton = minusButton;
-			this.plusButton = plusButton;
-		} else {
-			this.minusButton = null;
-			this.plusButton = null;
-		}
-
-		element.appendChild(headerDiv);
-		headerDiv.appendChild(headerP);
-		headerP.appendChild(headerText);
-		headerP.appendChild(this.countDaysOnlyVegan);
-
-		element.appendChild(barDiv);
-		barDiv.appendChild(minusButton);
-		barDiv.appendChild(this.visibleSpan);
-		barDiv.appendChild(this.hidingSpan);
-		barDiv.appendChild(plusButton);
+		this.minusButton = document.getElementById(`btn-minus-${this.keyword}`);
+		this.plusButton = document.getElementById(`btn-plus-${this.keyword}`);
+		console.log(`Plus button: ${this.plusButton}`);
 	}
 
 	/**
@@ -155,20 +49,27 @@ class CountingRowContent {
 	}
 
 	set minusEnabled(enabled) {
+		if (this.minusButton == null) {
+			throw new Error('No minus button, can’t enable it.');
+		}
 		this.minusButton.disabled = !enabled;
 	}
 	set plusEnabled(enabled) {
+		if (this.plusButton == null) {
+			throw new Error('No plus button, can’t enable it.');
+		}
 		this.plusButton.disabled = !enabled;
 	}
 
-	refresh(daysVegan) {
-		for (let i = 0; i < daysVegan; i++) {
-			this.visibleSpan.appendChild(this.leafSpans[i]);
+	refresh(nbDays) {
+		console.log(`Row ${this.keyword} refresh to ${nbDays}.`);
+		for (let i = 1; i <= nbDays; i++) {
+			this.icons[i].setAttribute("style", "visibility:visible");
 		}
-		for (let i = daysVegan; i < 5; i++) {
-			this.hidingSpan.appendChild(this.leafSpans[i]);
+		for (let i = nbDays + 1; i <= 5; i++) {
+			this.icons[i].setAttribute("style", "visibility:hidden");
 		}
-		this.countDaysOnlyVegan.textContent = daysVegan;
+		this.countDays.textContent = nbDays;
 	}
 }
 
@@ -189,27 +90,23 @@ class Controller {
 	}
 
 	bind() {
-		const rowVegan = document.getElementById('row-vegan');
-		this.veganRowContent = new CountingRowContent('Nombre de jours avec choix uniquement vegan : ', createVeganIcon, true);
-		this.veganRowContent.bindTo(rowVegan);
+		this.veganRowContent = new CountingRowContent('vegan');
+		this.veganRowContent.init();
 		this.veganRowContent.minusOnClick = this.minusVegan.bind(this);
 		this.veganRowContent.plusOnClick = this.plusVegan.bind(this);
 
-		const rowMeat = document.getElementById('row-meat');
-		this.meatRowContent = new CountingRowContent('Nombre de jours avec choix uniquement non-vegan : ', createMeatIcon, true);
-		this.meatRowContent.bindTo(rowMeat);
+		this.meatRowContent = new CountingRowContent('meat');
+		this.meatRowContent.init();
 		this.meatRowContent.minusOnClick = this.minusMeat.bind(this);
 		this.meatRowContent.plusOnClick = this.plusMeat.bind(this);
 
-		const rowMixed = document.getElementById('row-mixed');
-		this.mixedRowContent = new CountingRowContent('Nombre de jours avec choix vegan et non-vegan : ', createMixedIcon, true);
-		this.mixedRowContent.bindTo(rowMixed);
+		this.mixedRowContent = new CountingRowContent('mixed');
+		this.mixedRowContent.init();
 		this.mixedRowContent.minusOnClick = this.minusMixed.bind(this);
 		this.mixedRowContent.plusOnClick = this.plusMixed.bind(this);
 
-		const rowRemaining = document.getElementById('row-remaining');
-		this.remainingRowContent = new CountingRowContent('Nombre de jours restant à répartir : ', createRemainingIcon, false);
-		this.remainingRowContent.bindTo(rowRemaining);
+		this.remainingRowContent = new CountingRowContent('remaining');
+		this.remainingRowContent.init();
 
 		this.refresh();
 	}
@@ -271,6 +168,7 @@ class Controller {
 	}
 
 	refresh() {
+		console.log('Controller refresh.');
 		this.veganRowContent.refresh(this.daysVegan);
 		this.meatRowContent.refresh(this.daysMeat);
 		this.mixedRowContent.refresh(this.daysMixed);

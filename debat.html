@@ -26,10 +26,181 @@ extra_js:
 	<p>Une autorité locale considère la mise en place d’une cantine
 		publique dans la ville de Ploumme-Sur-Quaine. Dans quelle mesure cette
 		cantine devrait-elle être végane ?</p>
-	<div class="row" id="row-vegan"></div>
-	<div class="row" id="row-meat"></div>
-	<div class="row" id="row-mixed"></div>
-	<div class="row" id="row-remaining"></div>
+	<div class="counting-row container d-grid">
+		<div class="row" id="row-vegan"></div>
+		<div class="row" id="row-meat"></div>
+		<div class="row" id="row-mixed"></div>
+		<div class="row" id="row-remaining"></div>
+	</div>
+</div>
+<div class="counting-row container d-grid">
+	<div class="header">
+		Nombre de jours avec choix uniquement vegan : <span id="days-vegan"></span>
+	</div>
+	<div class="counting-row-icon">
+		<button type="button" class="btn" id="btn-minus-vegan">
+			<span class="fas"></span>
+		</button>
+	</div>
+	<div class="counting-row-icon" id="vegan-1">
+		<span class="fas fa-leaf" style="color: Green"></span>
+	</div>
+	<div class="counting-row-icon" id="vegan-2">
+		<span class="fas fa-leaf" style="color: Green"></span>
+	</div>
+	<div class="counting-row-icon" id="vegan-3">
+		<span class="fas fa-leaf" style="color: Green"></span>
+	</div>
+	<div class="counting-row-icon" id="vegan-4">
+		<span class="fas fa-leaf" style="color: Green"></span>
+	</div>
+	<div class="counting-row-icon" id="vegan-5" style="visibility: hidden">
+		<span class="fas fa-leaf" style="color: Green"></span>
+	</div>
+	<div class="counting-row-icon">
+		<button type="button" class="btn" id="btn-plus-vegan">
+			<span class="fas"></span>
+		</button>
+	</div>
+	<div class="header">
+		Nombre de jours avec choix uniquement non-vegan : <span id="days-meat"></span>
+	</div>
+	<div class="counting-row-icon">
+		<button type="button" class="btn" id="btn-minus-meat">
+			<span class="fas"></span>
+		</button>
+	</div>
+	<div class="counting-row-icon" id="meat-1">
+		<span class="fas fa-drumstick-bite" style="color: Red"></span>
+	</div>
+	<div class="counting-row-icon" id="meat-2">
+		<span class="fas fa-drumstick-bite" style="color: Red"></span>
+	</div>
+	<div class="counting-row-icon" id="meat-3">
+		<span class="fas fa-drumstick-bite" style="color: Red"></span>
+	</div>
+	<div class="counting-row-icon" id="meat-4">
+		<span class="fas fa-drumstick-bite" style="color: Red"></span>
+	</div>
+	<div class="counting-row-icon" id="meat-5" style="visibility: hidden">
+		<span class="fas fa-drumstick-bite" style="color: Red"></span>
+	</div>
+	<div class="counting-row-icon">
+		<button type="button" class="btn" id="btn-plus-meat">
+			<span class="fas"></span>
+		</button>
+	</div>
+	<div class="header">
+		Nombre de jours avec choix vegan et non-vegan : <span id="days-mixed"></span>
+	</div>
+	<div class="counting-row-icon">
+		<button type="button" class="btn" id="btn-minus-mixed">
+			<span class="fas"></span>
+		</button>
+	</div>
+	<div class="counting-row-icon" id="mixed-1">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-4 down-2 right-2"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-4 up-2 left-2"></div>
+		</div>
+	</div>
+	<div class="counting-row-icon" id="mixed-2">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-4 down-2 right-2"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-4 up-2 left-2"></div>
+		</div>
+	</div>
+	<div class="counting-row-icon" id="mixed-3">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-4 down-2 right-2"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-4 up-2 left-2"></div>
+		</div>
+	</div>
+	<div class="counting-row-icon" id="mixed-4">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-4 down-2 right-2"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-4 up-2 left-2"></div>
+		</div>
+	</div>
+	<div class="counting-row-icon" id="mixed-5" style="visibility: hidden">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-4 down-2 right-2"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-4 up-2 left-2"></div>
+		</div>
+	</div>
+	<div class="counting-row-icon">
+		<button type="button" class="btn" id="btn-plus-mixed">
+			<span class="fas"></span>
+		</button>
+	</div>
+	<div class="header">
+		Nombre de jours restant à répartir : <span id="days-remaining"></span>
+	</div>
+	<div class="counting-row-icon"></div>
+	<div class="counting-row-icon" id="remaining-1">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-8 down-3 left-4"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-8 up-3 left-4"></div>
+			<div
+			class="fa-layers-text"
+			data-fa-transform="shrink-1 right-4" style="font-weight: 900">?</div>
+		</span>
+		</div>
+	</div>
+	<div class="counting-row-icon" id="remaining-2">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-4 down-3 right-4"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-4 up-3 left-4"></div>
+			<div class="fas fa-slash" data-fa-transform="shrink-4 rotate--90"
+				style="font-weight: 600"></div>
+		</div>
+	</div>
+	<div class="counting-row-icon" id="remaining-3">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-4 down-3 right-4"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-4 up-3 left-4"></div>
+			<div class="fas fa-slash" data-fa-transform="shrink-4 rotate--90"
+				style="font-weight: 600"></div>
+		</div>
+	</div>
+	<div class="counting-row-icon" id="remaining-4">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-4 down-3 right-4"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-4 up-3 left-4"></div>
+			<div class="fas fa-slash" data-fa-transform="shrink-4 rotate--90"
+				style="font-weight: 600"></div>
+		</div>
+	</div>
+	<div class="counting-row-icon" id="remaining-5"
+		style="visibility: hidden">
+		<div class="fa-layers fa-fw">
+			<div class="fas fa-leaf" style="color: Green"
+				data-fa-transform="shrink-4 down-3 right-4"></div>
+			<div class="fas fa-drumstick-bite" style="color: Red"
+				data-fa-transform="shrink-4 up-3 left-4"></div>
+			<div class="fas fa-slash" data-fa-transform="shrink-4 rotate--90"
+				style="font-weight: 600"></div>
+		</div>
+	</div>
+	<div class="counting-row-icon"></div>
 </div>
 <div id="videos" class="row" hidden="true">
 	<p>Videos.</p>
