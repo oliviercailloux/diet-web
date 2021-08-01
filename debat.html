@@ -219,4 +219,16 @@ extra_js:
 		</div>
 	</div>
 	<h2>Vues</h2>
+	<video id="my-video" class="video-js" controls preload="auto"
+		width="640" height="264" poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
+		<source src="MY_VIDEO.mp4" type="video/mp4"></source>
+		<source src="MY_VIDEO.webm" type="video/webm"></source>
+	</video>
+	<p class="vjs-no-js">
+		To view this video please enable JavaScript, and consider upgrading to
+		a web browser that <a href="https://videojs.com/html5-video-support/">supports
+			HTML5 video</a>
+	</p>
+
+	<script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
 </div>
