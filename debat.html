@@ -205,30 +205,40 @@ extra_js:
 <div id="videos">
 	<h2>À voir</h2>
 	<div class="videos container">
-		<div class="video container">
-			<div>thumb</div>
-			<div>texttttttttttttttttttt</div>
+		<div class="video-entry container">
+			<video id="my-video" class="video-js vjs-16-9 video" controls preload="auto" data-setup=''>
+				<source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4"></source>
+				<source src="https://vjs.zencdn.net/v/oceans.webm" type="video/webm"></source>
+				<p class="vjs-no-js">
+					To view this video please enable JavaScript, and consider upgrading
+					to a web browser that <a
+						href="https://videojs.com/html5-video-support/">supports HTML5
+						video</a>
+				</p>
+			</video>
+			<div class="video-text">texttttttttttttttttttt</div>
 		</div>
-		<div class="video container">
+		<div class="video-entry container">
 			<div>thumb</div>
 			<div>textttztttttttttttttttt</div>
 		</div>
-		<div class="video container">
+		<div class="video-entry container">
 			<div>thumb</div>
 			<div>texttttttttttttttttttt</div>
 		</div>
 	</div>
 	<h2>Vues</h2>
-	<video id="my-video" class="video-js" controls preload="auto"
-		width="640" height="264" poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
-		<source src="MY_VIDEO.mp4" type="video/mp4"></source>
-		<source src="MY_VIDEO.webm" type="video/webm"></source>
+	<video id="my-video" class="video-js video" controls preload="auto"
+		poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
+		<source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4"></source>
+		<source src="https://vjs.zencdn.net/v/oceans.webm" type="video/webm"></source>
+		<p class="vjs-no-js">
+			To view this video please enable JavaScript, and consider upgrading
+			to a web browser that <a
+				href="https://videojs.com/html5-video-support/">supports HTML5
+				video</a>
+		</p>
 	</video>
-	<p class="vjs-no-js">
-		To view this video please enable JavaScript, and consider upgrading to
-		a web browser that <a href="https://videojs.com/html5-video-support/">supports
-			HTML5 video</a>
-	</p>
 
 	<script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
 </div>

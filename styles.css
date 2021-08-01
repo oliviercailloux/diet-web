@@ -1,15 +1,29 @@
 .counting-row {
-    display: grid;
-    grid-template-columns: 1fr repeat(7, max-content);
+	display: grid;
+	grid-template-columns: 1fr repeat(7, max-content);
 }
+
 .counting-row-icon {
-    justify-self: center;
+	justify-self: center;
 }
+
 .videos {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+	grid-auto-rows: 300px;
 }
+
+.video-entry {
+	display: grid;
+	grid-template-columns: 300px 200px;
+}
+
 .video {
-    display: grid;
-    grid-template-columns: 100px 200px;
+	align-self: center;
+	width: 100%;
+	height: auto;
 }
+.video-text {
+	align-self: center;
+}
+
