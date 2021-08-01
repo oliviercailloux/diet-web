@@ -7,10 +7,20 @@ function makeId(length) {
 	return result;
 }
 
+function visibleKeyword(visible) {
+	if (visible) {
+		return "visibility:visible";
+	}
+	else {
+		return "visibility:hidden";
+	}
+}
+
 class CountingRowContent {
 	keyword;
 	icons;
-
+	icon;
+	
 	countDays;
 	minusButton;
 	plusButton;
@@ -26,6 +36,8 @@ class CountingRowContent {
 		for (let i = 1; i <= 5; i++) {
 			this.icons[i] = document.getElementById(`${this.keyword}-${i}`);
 		}
+		
+		this.icon = document.getElementById(`${this.keyword}-icon`);
 
 		this.minusButton = document.getElementById(`btn-minus-${this.keyword}`);
 		this.plusButton = document.getElementById(`btn-plus-${this.keyword}`);
@@ -89,7 +101,10 @@ class Controller {
 		this.daysMixed = 0;
 	}
 
-	bind() {
+	init() {
+		this.contentSubmit = document.getElementById('content-submit');
+		this.btnSubmit = document.getElementById('btn-submit');
+
 		this.veganRowContent = new CountingRowContent('vegan');
 		this.veganRowContent.init();
 		this.veganRowContent.minusOnClick = this.minusVegan.bind(this);
@@ -180,5 +195,18 @@ class Controller {
 		this.veganRowContent.plusEnabled = (this.daysRemaining >= 1);
 		this.meatRowContent.plusEnabled = (this.daysRemaining >= 1);
 		this.mixedRowContent.plusEnabled = (this.daysRemaining >= 1);
+
+		const canSubmit = (this.daysRemaining == 0);
+		this.btnSubmit.setAttribute("style", visibleKeyword(canSubmit));
+		this.contentSubmit.textContent = '';
+		for (let i = 1; i <= this.daysVegan; ++i) {
+			this.contentSubmit.append(this.veganRowContent.icon.cloneNode(true));
+		}
+		for (let i = 1; i <= this.daysMeat; ++i) {
+			this.contentSubmit.append(this.meatRowContent.icon.cloneNode(true));
+		}
+		for (let i = 1; i <= this.daysMixed; ++i) {
+			this.contentSubmit.append(this.mixedRowContent.icon.cloneNode(true));
+		}
 	}
 }

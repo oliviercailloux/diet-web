@@ -22,4 +22,4 @@ accept.onclick = function () {
     
 }
 
-new Controller().bind();
+new Controller().init();
