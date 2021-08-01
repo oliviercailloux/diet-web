@@ -7,9 +7,6 @@
 }
 .videos {
     display: grid;
-    grid-template-columns: repeat(10, max-content);
-}
-.video {
-    display: grid;
-    grid-template-columns: 100px 200px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    column-gap: 10px;
 }
