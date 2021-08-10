@@ -16,11 +16,84 @@ function visibleKeyword(visible) {
 	}
 }
 
+class Controller {
+	hadId;
+	id;
+	pw;
+	acceptElement;
+	judgmentElement;
+	videosElement;
+
+	constructor() {
+		let l = window.localStorage;
+		console.log(l);
+
+		this.hadId = window.localStorage.getItem('id') != null;
+		if (!this.hadId) {
+			const d = new Date();
+			l.setItem('id', `${d.toISOString()} - ${makeId(5)}`);
+			l.setItem('pw', `${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)}`);
+		}
+
+		this.id = l.getItem('id');
+		this.pw = l.getItem('pw');
+
+		console.log(`Using id ${this.id}.`);
+
+		this.acceptElement = document.getElementById('conditions');
+		console.log(`Accept element: ${this.acceptElement}.`)
+		this.acceptElement.onclick = function() {
+			console.log('Conditions accepted.');
+			query();
+		}
+
+		this.judgmentElement = document.getElementById('judgment');
+		new JudgmentController().init();
+
+		this.videosElement = document.getElementById('videos');
+		new VideosController();
+	}
+
+	query() {
+		if (this.hadId) {
+			fetch('http://localhost:8080/v0/me/status').then(response => response.json())
+				.then(data => this.refresh(data));
+		} else {
+			this.refresh(null);
+		}
+	}
+
+	refresh(status) {
+		console.log(`Refreshing given status: ${status}.`);
+		
+		const events = (status == null) ? [] : status.events;
+		console.log(`Events: ${events}.`);
+		let hasJudgment = false;
+		for (var i = 0; i < status.events.length; ++i) {
+			const event = events[i];
+			hasJudgment = event.hasOwnProperty("judgment");
+		}
+		console.log(`Has judgment: ${hasJudgment}.`);
+
+		this.acceptElement.disabled = true;
+		this.judgmentElement.disabled = true;
+		this.videosElement.disabled = true;
+		
+		if (status == null || status.events.length == 0) {
+			this.acceptElement.disabled = false;
+		} else if (!hasJudgment) {
+			this.judgmentElement.disabled = false;
+		} else {
+			this.videosElement.disabled = false;
+		}
+	}
+}
+
 class CountingRowContent {
 	keyword;
 	icons;
 	icon;
-	
+
 	countDays;
 	minusButton;
 	plusButton;
@@ -36,7 +109,7 @@ class CountingRowContent {
 		for (let i = 1; i <= 5; i++) {
 			this.icons[i] = document.getElementById(`${this.keyword}-${i}`);
 		}
-		
+
 		this.icon = document.getElementById(`${this.keyword}-icon`);
 
 		this.minusButton = document.getElementById(`btn-minus-${this.keyword}`);
@@ -85,7 +158,7 @@ class CountingRowContent {
 	}
 }
 
-class Controller {
+class JudgmentController {
 	daysVegan;
 	daysMeat;
 	daysMixed;
@@ -208,5 +281,27 @@ class Controller {
 		for (let i = 1; i <= this.daysMixed; ++i) {
 			this.contentSubmit.append(this.mixedRowContent.icon.cloneNode(true));
 		}
+	}
+}
+
+class VideosController {
+	videosToSeeElement;
+	firstVideoEntryElement;
+	
+	constructor() {
+		this.videosToSeeElement = document.getElementById("videos-to-see");
+		this.firstVideoEntryElement = this.videosToSeeElement.firstChild;
+		console.log(`Videos to see element: ${this.videosToSeeElement}.`);
+		console.log(`First video entry element: ${this.firstVideoEntryElement}.`);
+	}
+	
+	populate(videos) {
+		
+	}
+	
+	setVideo(videoEntryElement, video) {
+		const videoElement = videoEntryElement.children[0];
+		const scrMp4Element = videoElement.children[0];
+		const scrWebmElement = videoElement.children[0];
 	}
 }

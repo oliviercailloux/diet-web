@@ -10,20 +10,19 @@
 .videos {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-	grid-auto-rows: 300px;
+	column-gap: 30px;
+	row-gap: 30px;
 }
 
 .video-entry {
 	display: grid;
 	grid-template-columns: 300px 200px;
+	align-items: center;
+	column-gap: 10px;
 }
 
 .video {
-	align-self: center;
 	width: 100%;
 	height: auto;
-}
-.video-text {
-	align-self: center;
 }
 
