@@ -54,18 +54,28 @@ class Controller {
 		new VideosController();
 	}
 
-	query() {
+	statusQuery() {
 		if (this.hadId) {
-			fetch('http://localhost:8080/v0/me/status').then(response => response.json())
-				.then(data => this.refresh(data));
+			const init = {
+				
+			};
+			fetch('http://localhost:8080/v0/me/status', init).then(this.statusResponse);
 		} else {
 			this.refresh(null);
 		}
 	}
 
+	statusResponse(response) {
+		console.log(`Response status: ${response.status}.`);
+		if (!response.ok) {
+			throw new Error(`Got status ${response.status}.`);
+		}
+		response.json().then(refresh);
+	}
+
 	refresh(status) {
 		console.log(`Refreshing given status: ${status}.`);
-		
+
 		const events = (status == null) ? [] : status.events;
 		console.log(`Events: ${events}.`);
 		let hasJudgment = false;
@@ -78,7 +88,7 @@ class Controller {
 		this.acceptElement.disabled = true;
 		this.judgmentElement.disabled = true;
 		this.videosElement.disabled = true;
-		
+
 		if (status == null || status.events.length == 0) {
 			this.acceptElement.disabled = false;
 		} else if (!hasJudgment) {
@@ -287,18 +297,18 @@ class JudgmentController {
 class VideosController {
 	videosToSeeElement;
 	firstVideoEntryElement;
-	
+
 	constructor() {
 		this.videosToSeeElement = document.getElementById("videos-to-see");
 		this.firstVideoEntryElement = this.videosToSeeElement.firstChild;
 		console.log(`Videos to see element: ${this.videosToSeeElement}.`);
 		console.log(`First video entry element: ${this.firstVideoEntryElement}.`);
 	}
-	
+
 	populate(videos) {
-		
+
 	}
-	
+
 	setVideo(videoEntryElement, video) {
 		const videoElement = videoEntryElement.children[0];
 		const scrMp4Element = videoElement.children[0];

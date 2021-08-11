@@ -2,4 +2,4 @@ if (window.location.protocol !== 'https:' && location.hostname !== "localhost" &
 	throw new Error('Protocol should be https.');
 }
 
-new Controller().query();
+new Controller().statusQuery();
