@@ -1,3 +1,48 @@
+/**
+ * Converts a JS string to a UTF-8 "byte" array.
+ * @param {string} str 16-bit unicode string.
+ * @return {!Array<number>} UTF-8 byte array.
+ * From https://github.com/google/closure-library/blob/master/closure/goog/crypt/crypt.js#L114
+ */
+function stringToUtf8ByteArray(str) {
+	let out = [], p = 0;
+	for (let i = 0; i < str.length; i++) {
+		const c = str.charCodeAt(i);
+		if (c < 128) {
+			out[p++] = c;
+		} else if (c < 2048) {
+			out[p++] = (c >> 6) | 192;
+			out[p++] = (c & 63) | 128;
+		} else if (
+			((c & 0xFC00) == 0xD800) && (i + 1) < str.length &&
+			((str.charCodeAt(i + 1) & 0xFC00) == 0xDC00)) {
+			// Surrogate Pair
+			c = 0x10000 + ((c & 0x03FF) << 10) + (str.charCodeAt(++i) & 0x03FF);
+			out[p++] = (c >> 18) | 240;
+			out[p++] = ((c >> 12) & 63) | 128;
+			out[p++] = ((c >> 6) & 63) | 128;
+			out[p++] = (c & 63) | 128;
+		} else {
+			out[p++] = (c >> 12) | 224;
+			out[p++] = ((c >> 6) & 63) | 128;
+			out[p++] = (c & 63) | 128;
+		}
+	}
+	return out;
+};
+
+/** I convert to UTF-8 because it seems much more prevalent (https://en.wikipedia.org/wiki/Popularity_of_text_encodings). Code taken from https://stackoverflow.com/a/9458996. */
+function stringToUtf8ToBase64(input) {
+	const utf8 = stringToUtf8ByteArray(input);
+	let result = '';
+	for (let i = 0; i < utf8.length; i++) {
+		result += String.fromCharCode(utf8[i]);
+	}
+	const encoded = window.btoa(result);
+	console.log(`Encoded ${input} to ${encoded}.`);
+	return encoded;
+}
+
 function makeId(length) {
 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	var result = '';
@@ -14,6 +59,18 @@ function visibleKeyword(visible) {
 	else {
 		return "visibility:hidden";
 	}
+}
+
+function getFetchInitWithAuth() {
+	const username = "user0";
+	const password = "user";
+	let headers = new Headers();
+	const authString = `Basic ${stringToUtf8ToBase64(username)}:${stringToUtf8ToBase64(password)}`;
+	headers.append('Authorization', authString);
+	const init = {
+		headers: headers
+	};
+	return init;
 }
 
 class Controller {
@@ -56,9 +113,7 @@ class Controller {
 
 	statusQuery() {
 		if (this.hadId) {
-			const init = {
-				
-			};
+			const init = getFetchInitWithAuth();
 			fetch('http://localhost:8080/v0/me/status', init).then(this.statusResponse);
 		} else {
 			this.refresh(null);
