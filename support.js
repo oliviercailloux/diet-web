@@ -206,8 +206,8 @@ class Controller {
 			this.judgmentElement.hidden = false;
 		} else {
 			console.log(`Enabling videos.`);
-			this.videosController.populateToSee(status.toSee);
-			this.videosController.populateSeen(status.seen);
+			this.videosController.populate(status.toSee, VideoSection.TO_SEE);
+			this.videosController.populate(status.seen, VideoSection.SEEN);
 			this.videosElement.hidden = false;
 		}
 	}
@@ -419,6 +419,11 @@ class JudgmentController {
 	}
 }
 
+const VideoSection = {
+	TO_SEE: "to see",
+	SEEN: "seen"
+}
+
 class VideosController {
 	controller;
 
@@ -438,31 +443,34 @@ class VideosController {
 		this.videoEntryPrototypeElement.remove();
 	}
 
-	populate(element, videos) {
+	populate(videos, section) {
+		let element;
+		switch (section) {
+			case VideoSection.TO_SEE:
+				element = this.videosToSeeElement;
+				break;
+			case VideoSection.SEEN:
+				element = this.videosSeenElement;
+				break;
+		}
 		while (element.lastChild) {
 			element.removeChild(element.lastChild);
 		}
 		for (let i = 0; i < videos.length; ++i) {
-			this.addVideo(element, videos[i]);
+			this.addVideo(element, videos[i], section);
 		}
 	}
 
-	populateToSee(videos) {
-		this.populate(this.videosToSeeElement, videos);
-	}
-	populateSeen(videos) {
-		this.populate(this.videosSeenElement, videos);
-	}
-
-	addVideo(parentElement, video) {
+	addVideo(parentElement, video, section) {
 		console.log('Adding video: ', video, '.');
 		let entry = this.videoEntryPrototypeElement.cloneNode(true);
-		const id = this.setVideo(entry, video);
+		//		const id = 
+		this.setVideo(entry, video, section);
 		parentElement.appendChild(entry);
-		videojs(id);
+		//		videojs(id);
 	}
 
-	setVideo(videoEntryElement, video) {
+	setVideo(videoEntryElement, video, section) {
 		const videoElement = videoEntryElement.children[0];
 		videoElement.id = "video-" + video.fileId;
 
@@ -470,15 +478,21 @@ class VideosController {
 		const srcWebmElement = videoElement.children[0];
 		srcMp4Element.setAttribute('src', video.url);
 
-
 		const descrElement = videoEntryElement.children[1];
 		const textElement = descrElement.children[0];
 		const btnElement = descrElement.children[1];
 		textElement.append(video.description);
-		btnElement.onclick = () => {
-			console.log('Clicked', video);
-			this.controller.markSeen(video);
-		};
+		switch (section) {
+			case VideoSection.TO_SEE:
+				btnElement.onclick = () => {
+					console.log('Clicked', video);
+					this.controller.markSeen(video);
+				};
+				break;
+			case VideoSection.SEEN:
+				btnElement.remove();
+				break;
+		}
 		return videoElement.id;
 	}
 
