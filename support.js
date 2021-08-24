@@ -45,8 +45,8 @@ function stringToUtf8ToBase64(input) {
 
 function makeId(length) {
 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	var result = '';
-	for (var i = 0; i < length; i++) {
+	let result = '';
+	for (let i = 0; i < length; i++) {
 		result += characters.charAt(Math.floor(Math.random() * characters.length));
 	}
 	return result;
@@ -61,96 +61,163 @@ function visibleKeyword(visible) {
 	}
 }
 
-function getFetchInitWithAuth() {
-	const username = "user0";
-	const password = "user";
+function getFetchInitWithAuth(login) {
 	let headers = new Headers();
-	const authString = `Basic ${stringToUtf8ToBase64(username)}:${stringToUtf8ToBase64(password)}`;
-	headers.append('Authorization', authString);
+	const credentials = window.btoa(`${stringToUtf8ToBase64(login.username)}:${stringToUtf8ToBase64(login.password)}`)
+	const authString = `Basic ${credentials}`;
+	headers.set('Authorization', authString);
+	console.log(`Appended ${authString}.`);
+	headers.set('Accept', 'application/json');
 	const init = {
 		headers: headers
 	};
 	return init;
 }
 
-class Controller {
+class Login {
 	hadId;
-	id;
-	pw;
+
+	username;
+	password;
+
+	constructor(username, password) {
+		const uUndef = username == undefined;
+		const pUndef = password == undefined;
+		if (uUndef != pUndef)
+			throw new Error("Bad login use.");
+
+		if (uUndef) {
+			let l = window.localStorage;
+			console.log(l);
+
+			this.hadId = l.getItem('id') != null;
+			if (!this.hadId) {
+				const d = new Date();
+				l.setItem('id', `${d.toISOString()} - ${makeId(5)}`);
+				l.setItem('pw', `${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)}`);
+			}
+
+			this.username = l.getItem('id');
+			this.password = l.getItem('pw');
+		} else {
+			this.username = username;
+			this.password = password;
+			this.hadId = true;
+		}
+	}
+}
+
+class Controller {
+	url;
+	meUrl;
+
+	login;
+
 	acceptElement;
 	judgmentElement;
 	videosElement;
 
+	judgmentController;
+	videosController;
+
 	constructor() {
-		let l = window.localStorage;
-		console.log(l);
+		this.url = 'http://localhost:8080/v0/';
+		this.meUrl = 'http://localhost:8080/v0/me/';
 
-		this.hadId = window.localStorage.getItem('id') != null;
-		if (!this.hadId) {
-			const d = new Date();
-			l.setItem('id', `${d.toISOString()} - ${makeId(5)}`);
-			l.setItem('pw', `${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)}`);
-		}
+		//		this.login = new Login();
+		this.login = new Login("user0", "user");
 
-		this.id = l.getItem('id');
-		this.pw = l.getItem('pw');
-
-		console.log(`Using id ${this.id}.`);
+		console.log(`Using id ${this.login.username}.`);
 
 		this.acceptElement = document.getElementById('conditions');
 		console.log(`Accept element: ${this.acceptElement}.`)
-		this.acceptElement.onclick = function() {
+		this.acceptElement.onclick = () => {
 			console.log('Conditions accepted.');
-			query();
-		}
+			const init = getFetchInitWithAuth(this.login);
+			init.method = 'PUT';
+			fetch(`${this.meUrl}accept`, init).then((r) => this.statusResponse.call(this, r));
+		};
 
+		this.judgmentController = new JudgmentController();
 		this.judgmentElement = document.getElementById('judgment');
-		new JudgmentController().init();
+		this.judgmentElement.onclick = () => {
+			console.log(`Judgment given on: ${this}.`);
+			const init = getFetchInitWithAuth(this.login);
+			init.method = 'POST';
+			const body = {
+				daysVegan: this.judgmentController.daysVegan,
+				daysMeat: this.judgmentController.daysMeat
+			}
+			init.body = JSON.stringify(body);
+			init.headers.set('content-type', 'application/json');
+			console.log('Sending ', init.body, '.');
+			fetch(`${this.meUrl}judgment`, init).then((r) => this.statusResponse.call(this, r));
+		}
+		this.judgmentController.init();
 
 		this.videosElement = document.getElementById('videos');
-		new VideosController();
+		this.videosController = new VideosController(this);
 	}
 
 	statusQuery() {
-		if (this.hadId) {
-			const init = getFetchInitWithAuth();
-			fetch('http://localhost:8080/v0/me/status', init).then(this.statusResponse);
+		console.log(`Had id in status query: ${this.login.hadId}.`);
+		if (this.login.hadId) {
+			const init = getFetchInitWithAuth(this.login);
+			fetch(`${this.meUrl}status`, init).then((r) => this.statusResponse.call(this, r));
 		} else {
 			this.refresh(null);
 		}
 	}
 
 	statusResponse(response) {
-		console.log(`Response status: ${response.status}.`);
+		console.log('Response status: ', response.status, '');
 		if (!response.ok) {
 			throw new Error(`Got status ${response.status}.`);
 		}
-		response.json().then(refresh);
+		console.log(`Had id in status response: ${this.login.hadId}.`);
+		response.json().then((r) => this.refresh.call(this, r));
 	}
 
 	refresh(status) {
-		console.log(`Refreshing given status: ${status}.`);
+		console.log('Refreshing given status:', status, '.');
 
 		const events = (status == null) ? [] : status.events;
 		console.log(`Events: ${events}.`);
 		let hasJudgment = false;
-		for (var i = 0; i < status.events.length; ++i) {
+		for (let i = 0; i < status.events.length; ++i) {
 			const event = events[i];
-			hasJudgment = event.hasOwnProperty("judgment");
+			console.log("Considering event", event, ".");
+			if (event.hasOwnProperty("judgment")) {
+				hasJudgment = true;
+				break;
+			}
 		}
 		console.log(`Has judgment: ${hasJudgment}.`);
 
-		this.acceptElement.disabled = true;
-		this.judgmentElement.disabled = true;
-		this.videosElement.disabled = true;
+		this.acceptElement.hidden = true;
+		this.judgmentElement.hidden = true;
+		this.videosElement.hidden = true;
 
 		if (status == null || status.events.length == 0) {
-			this.acceptElement.disabled = false;
+			console.log(`Enabling accept.`);
+			this.acceptElement.hidden = false;
 		} else if (!hasJudgment) {
-			this.judgmentElement.disabled = false;
+			console.log(`Enabling judgment.`);
+			this.judgmentElement.hidden = false;
 		} else {
-			this.videosElement.disabled = false;
+			console.log(`Enabling videos.`);
+			this.videosController.populateToSee(status.toSee);
+			this.videosController.populateSeen(status.seen);
+			this.videosElement.hidden = false;
 		}
+	}
+
+	markSeen(video) {
+		const init = getFetchInitWithAuth(this.login);
+		init.method = 'PUT';
+		const target = this.url + 'video/' + video.fileId;
+		console.log('Marking video', video.fileId, 'seen to', target, '.');
+		fetch(`${target}`, init).then((r) => this.statusResponse.call(this, r));
 	}
 }
 
@@ -233,15 +300,18 @@ class JudgmentController {
 	mixedRowContent;
 	remainingRowContent;
 
+	contentSubmitElement;
+	btnSubmitElement;
+
 	constructor() {
 		this.daysVegan = 0;
 		this.daysMeat = 0;
-		this.daysMixed = 0;
+		this.daysMixed = 5;
 	}
 
 	init() {
-		this.contentSubmit = document.getElementById('content-submit');
-		this.btnSubmit = document.getElementById('btn-submit');
+		this.contentSubmitElement = document.getElementById('content-submit');
+		this.btnSubmitElement = document.getElementById('btn-submit');
 
 		this.veganRowContent = new CountingRowContent('vegan');
 		this.veganRowContent.init();
@@ -335,38 +405,81 @@ class JudgmentController {
 		this.mixedRowContent.plusEnabled = (this.daysRemaining >= 1);
 
 		const canSubmit = (this.daysRemaining == 0);
-		this.btnSubmit.setAttribute("style", visibleKeyword(canSubmit));
-		this.contentSubmit.textContent = '';
+		this.btnSubmitElement.setAttribute("style", visibleKeyword(canSubmit));
+		this.contentSubmitElement.textContent = '';
 		for (let i = 1; i <= this.daysVegan; ++i) {
-			this.contentSubmit.append(this.veganRowContent.icon.cloneNode(true));
+			this.contentSubmitElement.append(this.veganRowContent.icon.cloneNode(true));
 		}
 		for (let i = 1; i <= this.daysMeat; ++i) {
-			this.contentSubmit.append(this.meatRowContent.icon.cloneNode(true));
+			this.contentSubmitElement.append(this.meatRowContent.icon.cloneNode(true));
 		}
 		for (let i = 1; i <= this.daysMixed; ++i) {
-			this.contentSubmit.append(this.mixedRowContent.icon.cloneNode(true));
+			this.contentSubmitElement.append(this.mixedRowContent.icon.cloneNode(true));
 		}
 	}
 }
 
 class VideosController {
-	videosToSeeElement;
-	firstVideoEntryElement;
+	controller;
 
-	constructor() {
+	videosToSeeElement;
+	videosSeenElement;
+	videoEntryPrototypeElement;
+
+	constructor(controller) {
+		this.controller = controller;
+
 		this.videosToSeeElement = document.getElementById("videos-to-see");
-		this.firstVideoEntryElement = this.videosToSeeElement.firstChild;
-		console.log(`Videos to see element: ${this.videosToSeeElement}.`);
-		console.log(`First video entry element: ${this.firstVideoEntryElement}.`);
+		this.videosSeenElement = document.getElementById("videos-seen");
+		this.videoEntryPrototypeElement = this.videosToSeeElement.children[0];
+		this.videoPrototypeElement = this.videoEntryPrototypeElement.children[0];
+		console.log(`Videos to see element: `, this.videosToSeeElement, '.');
+		console.log(`First video entry element: `, this.videoEntryPrototypeElement, '.');
+		this.videoEntryPrototypeElement.remove();
 	}
 
-	populate(videos) {
+	populate(element, videos) {
+		while (element.lastChild) {
+			element.removeChild(element.lastChild);
+		}
+		for (let i = 0; i < videos.length; ++i) {
+			this.addVideo(element, videos[i]);
+		}
+	}
 
+	populateToSee(videos) {
+		this.populate(this.videosToSeeElement, videos);
+	}
+	populateSeen(videos) {
+		this.populate(this.videosSeenElement, videos);
+	}
+
+	addVideo(parentElement, video) {
+		console.log('Adding video: ', video, '.');
+		let entry = this.videoEntryPrototypeElement.cloneNode(true);
+		const id = this.setVideo(entry, video);
+		parentElement.appendChild(entry);
+		videojs(id);
 	}
 
 	setVideo(videoEntryElement, video) {
 		const videoElement = videoEntryElement.children[0];
-		const scrMp4Element = videoElement.children[0];
-		const scrWebmElement = videoElement.children[0];
+		videoElement.id = "video-" + video.fileId;
+
+		const srcMp4Element = videoElement.children[0];
+		const srcWebmElement = videoElement.children[0];
+		srcMp4Element.setAttribute('src', video.url);
+
+
+		const descrElement = videoEntryElement.children[1];
+		const textElement = descrElement.children[0];
+		const btnElement = descrElement.children[1];
+		textElement.append(video.description);
+		btnElement.onclick = () => {
+			console.log('Clicked', video);
+			this.controller.markSeen(video);
+		};
+		return videoElement.id;
 	}
+
 }

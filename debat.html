@@ -204,9 +204,9 @@ extra_js:
 </div>
 <div id="videos" hidden="true">
 	<h2>À voir</h2>
-	<div id="videos-to-see" class="videos container">
-		<div class="video-entry container">
-			<video class="video-js vjs-16-9 video" controls preload="auto" data-setup=''>
+	<div id="videos-to-see" class="videos">
+		<div class="video-entry">
+			<video class="video-js vjs-16-9 video" controls preload="auto">
 				<source src="" type="video/mp4"></source>
 				<source src="" type="video/webm"></source>
 				<p class="vjs-no-js">
@@ -216,9 +216,13 @@ extra_js:
 						video</a>
 				</p>
 			</video>
-			<div class="video-text"></div>
+			<div class="video-description">
+				<div class="video-text"></div>
+				<button type="button" class="btn btn-secondary">Vu</button>
+			</div>
 		</div>
 	</div>
 	<h2>Vues</h2>
+	<div id="videos-seen" class="videos">
 	<script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
 </div>
