@@ -61,17 +61,64 @@ function visibleKeyword(visible) {
 	}
 }
 
-function getFetchInitWithAuth(login) {
-	let headers = new Headers();
-	const credentials = window.btoa(`${stringToUtf8ToBase64(login.username)}:${stringToUtf8ToBase64(login.password)}`)
-	const authString = `Basic ${credentials}`;
-	headers.set('Authorization', authString);
-	console.log(`Appended ${authString}.`);
-	headers.set('Accept', 'application/json');
-	const init = {
-		headers: headers
-	};
-	return init;
+class Requester {
+	url;
+	meUrl;
+
+	constructor() {
+		this.url = 'http://localhost:8080/v0/';
+		this.meUrl = 'http://localhost:8080/v0/me/';
+	}
+
+	getFetchInit() {
+		let headers = new Headers();
+		const init = {
+			headers: headers
+		};
+		headers.set('content-type', 'application/json');
+		headers.set('Accept', 'application/json');
+		return init;
+	}
+
+	getFetchInitWithAuth(login) {
+		console.log('Fetching with', login, '.');
+		const init = this.getFetchInit();
+		const credentials = window.btoa(`${stringToUtf8ToBase64(login.username)}:${stringToUtf8ToBase64(login.password)}`)
+		const authString = `Basic ${credentials}`;
+		init.headers.set('Authorization', authString);
+		console.log(`Appended ${authString}.`);
+		return init;
+	}
+
+	accept(login, onStatus) {
+		console.log('Conditions accepted.');
+		const init = this.getFetchInit();
+		init.method = 'PUT';
+		init.body = login.getAsJsonBody();
+		fetch(`${this.meUrl}create-accept`, init).then(onStatus);
+	}
+
+	status(login, onStatus) {
+		const init = this.getFetchInitWithAuth(login);
+		console.log('Fetching with', init, 'to', `${this.meUrl}status`);
+		fetch(`${this.meUrl}status`, init).then(onStatus);
+	}
+
+	judge(login, body, onStatus) {
+		console.log('Judgment given', body, '.');
+		const init = this.getFetchInitWithAuth(login);
+		init.method = 'POST';
+		init.body = JSON.stringify(body);
+		fetch(`${this.meUrl}judgment`, init).then(onStatus);
+	}
+
+	markSeen(login, videoId, onStatus) {
+		const init = this.getFetchInitWithAuth(login);
+		init.method = 'PUT';
+		const target = this.url + 'video/' + videoId;
+		console.log('Marking video', videoId, 'seen to', target, '.');
+		fetch(`${target}`, init).then(onStatus);
+	}
 }
 
 class Login {
@@ -81,35 +128,60 @@ class Login {
 	password;
 
 	constructor(username, password) {
-		const uUndef = username == undefined;
-		const pUndef = password == undefined;
-		if (uUndef != pUndef)
+		if (username === null || password === null)
+			throw new Error("Bad login use.");
+
+		const uUndef = username === undefined;
+		const pUndef = password === undefined;
+		if (uUndef !== pUndef)
 			throw new Error("Bad login use.");
 
 		if (uUndef) {
-			let l = window.localStorage;
-			console.log(l);
-
-			this.hadId = l.getItem('id') != null;
-			if (!this.hadId) {
-				const d = new Date();
-				l.setItem('id', `${d.toISOString()} - ${makeId(5)}`);
-				l.setItem('pw', `${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)}`);
-			}
-
-			this.username = l.getItem('id');
-			this.password = l.getItem('pw');
+			this.init();
 		} else {
 			this.username = username;
 			this.password = password;
 			this.hadId = true;
 		}
 	}
+
+	getAsJsonBody() {
+		const body = {
+			username: this.username,
+			password: this.password
+		}
+		return JSON.stringify(body);
+	}
+
+	init() {
+		let l = window.localStorage;
+		console.log(l);
+
+		this.hadId = l.getItem('id') !== null;
+		const hasPassword = l.getItem('pw') !== null;
+		if (this.hadId !== hasPassword)
+			throw new Error("Bad login state.");
+
+		if (!this.hadId) {
+			const d = new Date();
+			l.setItem('id', `${d.toISOString()} - ${makeId(5)}`);
+			l.setItem('pw', `${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)} ${makeId(5)}`);
+		}
+
+		this.username = l.getItem('id');
+		this.password = l.getItem('pw');
+	}
+
+	reset() {
+		let l = window.localStorage;
+		l.removeItem('id');
+		l.removeItem('pw');
+		this.init();
+	}
 }
 
 class Controller {
-	url;
-	meUrl;
+	requester;
 
 	login;
 
@@ -121,39 +193,30 @@ class Controller {
 	videosController;
 
 	constructor() {
-		this.url = 'http://localhost:8080/v0/';
-		this.meUrl = 'http://localhost:8080/v0/me/';
-
-		//		this.login = new Login();
-		this.login = new Login("user0", "user");
+		this.requester = new Requester();
+		this.login = new Login();
+		//		this.login = new Login("user0", "user");
 
 		console.log(`Using id ${this.login.username}.`);
 
 		this.acceptElement = document.getElementById('conditions');
 		console.log(`Accept element: ${this.acceptElement}.`)
 		this.acceptElement.onclick = () => {
-			console.log('Conditions accepted.');
-			const init = getFetchInitWithAuth(this.login);
-			init.method = 'PUT';
-			fetch(`${this.meUrl}accept`, init).then((r) => this.statusResponse.call(this, r));
+			this.requester.accept(this.login, (r) => this.statusResponse.call(this, r));
 		};
 
 		this.judgmentController = new JudgmentController();
 		this.judgmentElement = document.getElementById('judgment');
-		this.judgmentElement.onclick = () => {
-			console.log(`Judgment given on: ${this}.`);
-			const init = getFetchInitWithAuth(this.login);
-			init.method = 'POST';
+		this.judgmentController.init();
+		const btnSubmitJudgmentElement = this.judgmentController.btnSubmitElement;
+		const onSubmitJudgment = () => {
 			const body = {
 				daysVegan: this.judgmentController.daysVegan,
 				daysMeat: this.judgmentController.daysMeat
 			}
-			init.body = JSON.stringify(body);
-			init.headers.set('content-type', 'application/json');
-			console.log('Sending ', init.body, '.');
-			fetch(`${this.meUrl}judgment`, init).then((r) => this.statusResponse.call(this, r));
+			this.requester.judge(this.login, body, (r) => this.statusResponse.call(this, r));
 		}
-		this.judgmentController.init();
+		btnSubmitJudgmentElement.onclick = onSubmitJudgment;
 
 		this.videosElement = document.getElementById('videos');
 		this.videosController = new VideosController(this);
@@ -162,8 +225,7 @@ class Controller {
 	statusQuery() {
 		console.log(`Had id in status query: ${this.login.hadId}.`);
 		if (this.login.hadId) {
-			const init = getFetchInitWithAuth(this.login);
-			fetch(`${this.meUrl}status`, init).then((r) => this.statusResponse.call(this, r));
+			this.requester.status(this.login, (r) => this.statusResponseInit.call(this, r));
 		} else {
 			this.refresh(null);
 		}
@@ -178,13 +240,28 @@ class Controller {
 		response.json().then((r) => this.refresh.call(this, r));
 	}
 
+	statusResponseInit(response) {
+		console.log('Response init status: ', response.status, '');
+		if (!response.ok) {
+			if (response.status === 401) {
+				console.log('Perhaps the ID was created locally but not remotely – let’s try to start the procedure fresh.');
+				this.refresh(null);
+			} else {
+				throw new Error(`Got status ${response.status}.`);
+			}
+		} else {
+			console.log(`Had id in status response: ${this.login.hadId}.`);
+			response.json().then((r) => this.refresh.call(this, r));
+		}
+	}
+
 	refresh(status) {
 		console.log('Refreshing given status:', status, '.');
 
-		const events = (status == null) ? [] : status.events;
+		const events = (status === null) ? [] : status.events;
 		console.log(`Events: ${events}.`);
 		let hasJudgment = false;
-		for (let i = 0; i < status.events.length; ++i) {
+		for (let i = 0; i < events.length; ++i) {
 			const event = events[i];
 			console.log("Considering event", event, ".");
 			if (event.hasOwnProperty("judgment")) {
@@ -198,7 +275,7 @@ class Controller {
 		this.judgmentElement.hidden = true;
 		this.videosElement.hidden = true;
 
-		if (status == null || status.events.length == 0) {
+		if (events.length === 0) {
 			console.log(`Enabling accept.`);
 			this.acceptElement.hidden = false;
 		} else if (!hasJudgment) {
@@ -213,11 +290,7 @@ class Controller {
 	}
 
 	markSeen(video) {
-		const init = getFetchInitWithAuth(this.login);
-		init.method = 'PUT';
-		const target = this.url + 'video/' + video.fileId;
-		console.log('Marking video', video.fileId, 'seen to', target, '.');
-		fetch(`${target}`, init).then((r) => this.statusResponse.call(this, r));
+		this.requester.markSeen(this.login, video.fileId, (r) => this.statusResponse.call(this, r));
 	}
 }
 
@@ -266,13 +339,13 @@ class CountingRowContent {
 	}
 
 	set minusEnabled(enabled) {
-		if (this.minusButton == null) {
+		if (this.minusButton === null) {
 			throw new Error('No minus button, can’t enable it.');
 		}
 		this.minusButton.disabled = !enabled;
 	}
 	set plusEnabled(enabled) {
-		if (this.plusButton == null) {
+		if (this.plusButton === null) {
 			throw new Error('No plus button, can’t enable it.');
 		}
 		this.plusButton.disabled = !enabled;
@@ -306,12 +379,12 @@ class JudgmentController {
 	constructor() {
 		this.daysVegan = 0;
 		this.daysMeat = 0;
-		this.daysMixed = 5;
+		this.daysMixed = 0;
 	}
 
 	init() {
 		this.contentSubmitElement = document.getElementById('content-submit');
-		this.btnSubmitElement = document.getElementById('btn-submit');
+		this.btnSubmitElement = document.getElementById('btn-submit-judgment');
 
 		this.veganRowContent = new CountingRowContent('vegan');
 		this.veganRowContent.init();
@@ -404,7 +477,7 @@ class JudgmentController {
 		this.meatRowContent.plusEnabled = (this.daysRemaining >= 1);
 		this.mixedRowContent.plusEnabled = (this.daysRemaining >= 1);
 
-		const canSubmit = (this.daysRemaining == 0);
+		const canSubmit = (this.daysRemaining === 0);
 		this.btnSubmitElement.setAttribute("style", visibleKeyword(canSubmit));
 		this.contentSubmitElement.textContent = '';
 		for (let i = 1; i <= this.daysVegan; ++i) {
@@ -486,6 +559,7 @@ class VideosController {
 			case VideoSection.TO_SEE:
 				btnElement.onclick = () => {
 					console.log('Clicked', video);
+					btnElement.disabled = true;
 					this.controller.markSeen(video);
 				};
 				break;
