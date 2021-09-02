@@ -1,12 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="canonical" href="https://oliviercailloux.github.io/diet-web/debat.html">
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script>
   <base href="/diet-web/">
   <!-- Begin Jekyll SEO tag v2.6.1 -->
 <title>Le débat | Ma cantine</title>
@@ -19,10 +21,11 @@
 <meta property="og:url" content="https://oliviercailloux.github.io/diet-web/debat.html" />
 <meta property="og:site_name" content="Ma cantine" />
 <script type="application/ld+json">
-{"@type":"WebPage","headline":"Le débat","url":"https://oliviercailloux.github.io/diet-web/debat.html","description":"Une étude scientifique concernant le jugement réfléchi","@context":"https://schema.org"}</script>
+{"@type":"WebPage","url":"https://oliviercailloux.github.io/diet-web/debat.html","headline":"Le débat","description":"Une étude scientifique concernant le jugement réfléchi","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
-  <script src="main.js" defer></script>
+  
+  <script src="support.js" defer></script>
   
   <script src="debate.js" defer></script>
   
@@ -37,13 +40,13 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="">Accueil</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="champions.html">Les champions</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="debat.html">Le débat</a>
         </li>
       </ul>
@@ -56,16 +59,224 @@
   </nav>
   <div class="container">
     <h1>Le débat</h1>
-    <p>Avant d’écouter les arguments des champions, nous vous prions d’indiquer votre acceptation des quelques clauses
-    suivantes, visant à nous permettre d’enregistrer votre parcours à travers les arguments, les parties de vidéos vues,
-    vos appréciations de ces arguments, et les réponses aux questions que nous vous poserons. Ces données seront
-    utilisées
-    uniquement dans le cadre de notre étude scientifique, et ne seront aucunement divulguées à des tierces
-    parties ou croisées avec d’autres informations vous concernant.</p>
-<p>Blah blah texte légal.</p>
-<p>Cliquez ci-dessous pour poursuivre le protocole d’expérimentation, si vous acceptez ces conditions.</p>
-<button type="button" class="btn btn-primary btn-block" id="accept-conditions">J’accepte ces conditions</button>
-<p>(NB : si vous avez déjà accepté ces conditions, et avez créé un compte utilisateur, loguez-vous pour revenir où vous en étiez.)</p>
+    <div id="conditions" hidden="true">
+	<p>Avant d’écouter les arguments des champions, nous vous prions
+		d’indiquer votre acceptation des quelques clauses suivantes, visant à
+		nous permettre d’enregistrer votre parcours à travers les arguments,
+		les parties de vidéos vues, vos appréciations de ces arguments, et les
+		réponses aux questions que nous vous poserons. Ces données seront
+		utilisées uniquement dans le cadre de notre étude scientifique, et ne
+		seront aucunement divulguées à des tierces parties ou croisées avec
+		d’autres informations vous concernant.</p>
+	<p>Blah blah texte légal.</p>
+	<p>Cliquez ci-dessous pour poursuivre le protocole
+		d’expérimentation, si vous acceptez ces conditions.</p>
+	<button type="button" class="btn btn-primary btn-block"
+		id="accept-conditions">J’accepte ces conditions</button>
+	<p>(NB : si vous avez déjà accepté ces conditions, et avez créé un
+		compte utilisateur, loguez-vous pour revenir où vous en étiez.)</p>
+</div>
+<div id="judgment" class="container" hidden="true">
+	<p>Une autorité locale considère la mise en place d’une cantine
+		publique dans la ville de Ploumme-Sur-Quaine. Dans quelle mesure cette
+		cantine devrait-elle être végane ?</p>
+	<div class="counting-row container d-grid">
+		<div class="header">
+			Nombre de jours avec choix uniquement vegan : <span id="days-vegan"></span>
+		</div>
+		<div class="counting-row-icon">
+			<button type="button" class="btn" id="btn-minus-vegan">
+				<span class="fas"></span>
+			</button>
+		</div>
+		<div class="counting-row-icon" id="vegan-1">
+			<span class="fas fa-leaf" style="color: Green" id="vegan-icon"></span>
+		</div>
+		<div class="counting-row-icon" id="vegan-2">
+			<span class="fas fa-leaf" style="color: Green"></span>
+		</div>
+		<div class="counting-row-icon" id="vegan-3">
+			<span class="fas fa-leaf" style="color: Green"></span>
+		</div>
+		<div class="counting-row-icon" id="vegan-4">
+			<span class="fas fa-leaf" style="color: Green"></span>
+		</div>
+		<div class="counting-row-icon" id="vegan-5" style="visibility: hidden">
+			<span class="fas fa-leaf" style="color: Green"></span>
+		</div>
+		<div class="counting-row-icon">
+			<button type="button" class="btn" id="btn-plus-vegan">
+				<span class="fas"></span>
+			</button>
+		</div>
+		<div class="header">
+			Nombre de jours avec choix uniquement non-vegan : <span
+				id="days-meat"></span>
+		</div>
+		<div class="counting-row-icon">
+			<button type="button" class="btn" id="btn-minus-meat">
+				<span class="fas"></span>
+			</button>
+		</div>
+		<div class="counting-row-icon" id="meat-1">
+			<span class="fas fa-drumstick-bite" style="color: Red" id="meat-icon"></span>
+		</div>
+		<div class="counting-row-icon" id="meat-2">
+			<span class="fas fa-drumstick-bite" style="color: Red"></span>
+		</div>
+		<div class="counting-row-icon" id="meat-3">
+			<span class="fas fa-drumstick-bite" style="color: Red"></span>
+		</div>
+		<div class="counting-row-icon" id="meat-4">
+			<span class="fas fa-drumstick-bite" style="color: Red"></span>
+		</div>
+		<div class="counting-row-icon" id="meat-5" style="visibility: hidden">
+			<span class="fas fa-drumstick-bite" style="color: Red"></span>
+		</div>
+		<div class="counting-row-icon">
+			<button type="button" class="btn" id="btn-plus-meat">
+				<span class="fas"></span>
+			</button>
+		</div>
+		<div class="header">
+			Nombre de jours avec choix vegan et non-vegan : <span id="days-mixed"></span>
+		</div>
+		<div class="counting-row-icon">
+			<button type="button" class="btn" id="btn-minus-mixed">
+				<span class="fas"></span>
+			</button>
+		</div>
+		<div class="counting-row-icon" id="mixed-1">
+			<div class="fa-layers fa-fw" id="mixed-icon">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-4 down-2 right-2"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-4 up-2 left-2"></div>
+			</div>
+		</div>
+		<div class="counting-row-icon" id="mixed-2">
+			<div class="fa-layers fa-fw">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-4 down-2 right-2"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-4 up-2 left-2"></div>
+			</div>
+		</div>
+		<div class="counting-row-icon" id="mixed-3">
+			<div class="fa-layers fa-fw">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-4 down-2 right-2"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-4 up-2 left-2"></div>
+			</div>
+		</div>
+		<div class="counting-row-icon" id="mixed-4">
+			<div class="fa-layers fa-fw">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-4 down-2 right-2"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-4 up-2 left-2"></div>
+			</div>
+		</div>
+		<div class="counting-row-icon" id="mixed-5" style="visibility: hidden">
+			<div class="fa-layers fa-fw">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-4 down-2 right-2"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-4 up-2 left-2"></div>
+			</div>
+		</div>
+		<div class="counting-row-icon">
+			<button type="button" class="btn" id="btn-plus-mixed">
+				<span class="fas"></span>
+			</button>
+		</div>
+		<div class="header">
+			Nombre de jours restant à répartir : <span id="days-remaining"></span>
+		</div>
+		<div class="counting-row-icon"></div>
+		<div class="counting-row-icon" id="remaining-1">
+			<div class="fa-layers fa-fw" id="remaining-icon">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-8 down-3 left-4"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-8 up-3 left-4"></div>
+				<div class="fa-layers-text" data-fa-transform="shrink-1 right-4"
+					style="font-weight: 900">?</div>
+			</div>
+		</div>
+		<div class="counting-row-icon" id="remaining-2">
+			<div class="fa-layers fa-fw">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-8 down-3 left-4"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-8 up-3 left-4"></div>
+				<div class="fa-layers-text" data-fa-transform="shrink-1 right-4"
+					style="font-weight: 900">?</div>
+			</div>
+		</div>
+		<div class="counting-row-icon" id="remaining-3">
+			<div class="fa-layers fa-fw">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-8 down-3 left-4"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-8 up-3 left-4"></div>
+				<div class="fa-layers-text" data-fa-transform="shrink-1 right-4"
+					style="font-weight: 900">?</div>
+			</div>
+		</div>
+		<div class="counting-row-icon" id="remaining-4">
+			<div class="fa-layers fa-fw">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-8 down-3 left-4"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-8 up-3 left-4"></div>
+				<div class="fa-layers-text" data-fa-transform="shrink-1 right-4"
+					style="font-weight: 900">?</div>
+			</div>
+		</div>
+		<div class="counting-row-icon" id="remaining-5"
+			style="visibility: hidden">
+			<div class="fa-layers fa-fw">
+				<div class="fas fa-leaf" style="color: Green"
+					data-fa-transform="shrink-8 down-3 left-4"></div>
+				<div class="fas fa-drumstick-bite" style="color: Red"
+					data-fa-transform="shrink-8 up-3 left-4"></div>
+				<div class="fa-layers-text" data-fa-transform="shrink-1 right-4"
+					style="font-weight: 900">?</div>
+			</div>
+		</div>
+		<div class="counting-row-icon"></div>
+	</div>
+	<br />
+	<p>
+		<button type="button" class="btn btn-primary btn-block text-left"
+			id="btn-submit-judgment">
+			Mon choix : <span id="content-submit"></span>
+		</button>
+	</p>
+</div>
+<div id="videos" hidden="true">
+	<h2>À voir</h2>
+	<div id="videos-to-see" class="videos">
+		<div class="video-entry">
+			<video controls preload="auto">
+				<source src="" type="video/mp4"></source>
+				<source src="" type="video/webm"></source>
+				<p>
+					To view this video please enable JavaScript, and consider upgrading
+					to a web browser that supports HTML5 video
+				</p>
+			</video>
+			<div class="video-description">
+				<div class="video-text"></div>
+				<button type="button" class="btn btn-secondary">Vu</button>
+			</div>
+		</div>
+	</div>
+	<h2>Vues</h2>
+	<div id="videos-seen" class="videos">
+</div>
   </div>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
