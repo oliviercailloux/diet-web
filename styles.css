@@ -1,37 +1,130 @@
+html {
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    background-color: teal;
+}
+
+.navbar ol {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar ol li {
+    padding: 10px;
+    color: white;
+}
+
+.navbar ol li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.navbar ol li.active {
+    font-weight: bold;
+}
+
+.main {
+    max-width: 50em;
+    margin: 0 auto;
+}
+
+h1 {
+    padding: 0.5em 0 0 0;
+    margin: 0;
+    font-size: xx-large;
+}
+
+.big-title {
+    text-align: center;
+}
+
+.columns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.columns section {
+    width: 48%;
+}
+
+.columns section h2 {
+    text-align: center;
+}
+
+.columns img {
+    max-width: 50%;
+    float: left;
+    padding: 0 4px 4px 0;
+}
+
 .counting-row {
-	display: grid;
-	grid-template-columns: 1fr repeat(7, max-content);
+    display: grid;
+    grid-template-columns: 1fr repeat(7, max-content);
+    align-items: center;
+    row-gap: 2px;
 }
 
 .counting-row-icon {
-	justify-self: center;
+    justify-self: center;
 }
 
-.videos {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-	column-gap: 30px;
-	row-gap: 30px;
-}
-
-.video-entry {
-	display: grid;
-	grid-template-columns: 260px 73px;
-	align-items: center;
-	column-gap: 7px;
-}
-
-video {
-	width: 100%;
-	height: auto;
+#videos {
+    overflow: auto;
 }
 
 .video-description {
-	align-items: top;
-	vertical-align: top;
+    text-align: center;
+    overflow: auto;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-.video-text {
-	align-items: bottom;
-	vertical-align: top;
+.side-MEAT {
+    stroke: red;
+}
+
+.side-VEGAN {
+    stroke: green;
+}
+
+.reachable {
+    fill: white;
+}
+
+.unreachable {
+    fill: silver;
+}
+
+.seen {
+    fill: Gainsboro;
+}
+
+.fa-play {
+    color: blue;
+}
+
+.foreign-video {
+    clip-path: url(#video-clip);
+}
+
+.video-description-id {
+	display: none;
+}
+
+.video-front {
+    position: fixed;
+    width: 90%;
+    height: 90%;
+    left: 5%;
+    top: 5%;
 }
