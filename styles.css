@@ -79,6 +79,7 @@ h1 {
 
 #videos {
     overflow: auto;
+    text-align: center;
 }
 
 .video-description {

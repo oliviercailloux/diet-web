@@ -21,12 +21,11 @@ export class Requester {
             window.location.hostname === '[::1]' ||
             // 127.0.0.1/8 is considered localhost for IPv4.
             (window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/) !== null);
-        if (isLocalhost) {
-            __classPrivateFieldSet(this, _Requester_url, `http://${window.location.hostname}:8080/v0/`, "f");
-        }
-        else {
-            __classPrivateFieldSet(this, _Requester_url, 'https://diet-serv.herokuapp.com/v0/', "f");
-        }
+        //		if (isLocalhost) {
+        //			this.#url = `http://${window.location.hostname}:8080/v0/`;
+        //		} else {
+        __classPrivateFieldSet(this, _Requester_url, 'https://diet-serv.herokuapp.com/v0/', "f");
+        //		}
         __classPrivateFieldSet(this, _Requester_meUrl, `${__classPrivateFieldGet(this, _Requester_url, "f")}me/`, "f");
         console.log('Talking to', __classPrivateFieldGet(this, _Requester_url, "f"));
         this.accept.bind(this);
